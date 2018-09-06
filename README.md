@@ -12,4 +12,6 @@ Automatic ssl issuing and nginx reverse proxy configuration
 
 * Acme.sh installed as root
 
+## Example wizard
 
+TODO

@@ -12,6 +12,7 @@ cat << "EOF"
    `----'`=-='   '
 EOF
 
+DNS_STRING=''
 
 echo "write the DOMAIN that you want to configure  (es merlinthewizard.com) without www!!!!!!!"
 read DOMAIN
@@ -25,7 +26,12 @@ read WWW
 echo "Issue staging ssl? (answer Y o N)"
 read STAGING
 
+echo "Use http challenge or aws? (answer H o A)"
+read AWS
 
+if [ "$AWS" = "A" ]; then
+  DNS_STRING='--dns dns_aws'
+fi
 
 echo "Thanks, wizard starting in 2 secs!"
 sleep 2
@@ -43,6 +49,10 @@ echo "Sedding..."
 sed -i 's!HOSTNAME!'${DOMAIN}'!g' /etc/nginx/conf.d/${DOMAIN}.conf
 sed -i 's!REVERSEURL!'${REVERSEURL}'!g' /etc/nginx/conf.d/${DOMAIN}.conf
 
+if [ "$AWS" = "H" ]; then
+    sed -i 's!#####!!g' /etc/nginx/conf.d/${DOMAIN}.conf
+fi
+
 echo "Folder creation..."
 
 mkdir /var/www/html/${DOMAIN}/
@@ -56,15 +66,15 @@ service nginx reload
 
 if [ "$STAGING" = "Y" ]; then
   if [ "$WWW" = "Y" ]; then
-    ~/.acme.sh/acme.sh --issue --staging -d ${DOMAIN} -d www.${DOMAIN} -w /var/www/html/${DOMAIN}/
+    ~/.acme.sh/acme.sh --issue --staging ${DNS_STRING} -d ${DOMAIN} -d www.${DOMAIN} -w /var/www/html/${DOMAIN}/
   else
-    ~/.acme.sh/acme.sh --issue --staging -d ${DOMAIN} -w /var/www/html/${DOMAIN}/
+    ~/.acme.sh/acme.sh --issue --staging ${DNS_STRING} -d ${DOMAIN} -w /var/www/html/${DOMAIN}/
   fi
 else
   if [ "$WWW" = "Y" ]; then
-    ~/.acme.sh/acme.sh --issue -d ${DOMAIN} -d www.${DOMAIN} -w /var/www/html/${DOMAIN}/
+    ~/.acme.sh/acme.sh --issue ${DNS_STRING} -d ${DOMAIN} -d www.${DOMAIN} -w /var/www/html/${DOMAIN}/
   else
-    ~/.acme.sh/acme.sh --issue -d ${DOMAIN} -w /var/www/html/${DOMAIN}/
+    ~/.acme.sh/acme.sh --issue ${DNS_STRING} -d ${DOMAIN} -w /var/www/html/${DOMAIN}/
   fi
 fi
 
@@ -79,6 +89,10 @@ fi
 
 sed -i 's!HOSTNAME!'${DOMAIN}'!g' /etc/nginx/conf.d/${DOMAIN}.conf
 sed -i 's!REVERSEURL!'${REVERSEURL}'!g' /etc/nginx/conf.d/${DOMAIN}.conf
+
+if [ "$AWS" = "H" ]; then
+    sed -i 's!#####!!g' /etc/nginx/conf.d/${DOMAIN}.conf
+fi
 
 echo "Nginx reload"
 

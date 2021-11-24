@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+
+set -e
+
 cat << "EOF"
             ,    _
            /|   | |
@@ -110,7 +113,7 @@ fi
 
 echo "Folder creation..."
 
-mkdir /var/www/html/${DOMAIN}/
+mkdir /var/www/html/${DOMAIN}/ || true
 chmod -R 777 /var/www/html/${DOMAIN}/
 
 echo "Nginx reload"

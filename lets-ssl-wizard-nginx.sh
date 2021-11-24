@@ -42,6 +42,11 @@ while test $# -gt 0; do
                     AWS=$1
                     shift
                     ;;
+                -force)
+                    shift
+                    FORCE=$1
+                    shift
+                    ;;
                 *)
                    echo "$1 is not a recognized flag!"
                    return 1;
@@ -91,10 +96,19 @@ if [ "$AWS" = "A" ]; then
   DNS_STRING='--dns dns_aws'
 fi
 
+if [ -z "$FORCE" ]; then
+  if [ -f /etc/nginx/conf.d/${DOMAIN}.conf ]; then
+        echo "etc/nginx/conf.d/${DOMAIN}.conf already exists, exiting..."
+        exit 0
+  fi
+fi
+
 echo "Thanks, wizard starting in 2 secs!"
 sleep 2
 
 echo "Copy start template..."
+
+
 
 if [ "$WWW" = "Y" ]; then
  cp template.www.vhosts.start.conf /etc/nginx/conf.d/${DOMAIN}.conf

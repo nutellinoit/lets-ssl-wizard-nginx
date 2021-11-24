@@ -124,15 +124,15 @@ service nginx reload
 
 if [ "$STAGING" = "Y" ]; then
   if [ "$WWW" = "Y" ]; then
-    ~/.acme.sh/acme.sh --issue --staging ${DNS_STRING} -d ${DOMAIN} ${DNS_STRING} -d www.${DOMAIN} -w /var/www/html/${DOMAIN}/
+    ~/.acme.sh/acme.sh --issue --staging ${DNS_STRING} -d ${DOMAIN} ${DNS_STRING} -d www.${DOMAIN} -w /var/www/html/${DOMAIN}/ --server letsencrypt
   else
-    ~/.acme.sh/acme.sh --issue --staging ${DNS_STRING} -d ${DOMAIN} -w /var/www/html/${DOMAIN}/
+    ~/.acme.sh/acme.sh --issue --staging ${DNS_STRING} -d ${DOMAIN} -w /var/www/html/${DOMAIN}/ --server letsencrypt
   fi
 else
   if [ "$WWW" = "Y" ]; then
-    ~/.acme.sh/acme.sh --issue ${DNS_STRING} -d ${DOMAIN} ${DNS_STRING} -d www.${DOMAIN} -w /var/www/html/${DOMAIN}/
+    ~/.acme.sh/acme.sh --issue ${DNS_STRING} -d ${DOMAIN} ${DNS_STRING} -d www.${DOMAIN} -w /var/www/html/${DOMAIN}/ --server letsencrypt
   else
-    ~/.acme.sh/acme.sh --issue ${DNS_STRING} -d ${DOMAIN} -w /var/www/html/${DOMAIN}/
+    ~/.acme.sh/acme.sh --issue ${DNS_STRING} -d ${DOMAIN} -w /var/www/html/${DOMAIN}/ --server letsencrypt
   fi
 fi
 
